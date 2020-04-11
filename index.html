@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Sock</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='style.css'>
+</head>
+<body>
+
+    <div class="nav-bar"> </div>
+
+    <div id = 'app'>
+        <div class="product">
+            <div class="product-image">
+                <img v-bind:src="image"/>
+            </div>
+    
+            <div class="product-info">
+                <h1>{{ product }}</h1>
+                <p v-show="onStock === true"> In stock</p>
+                <p v-show="onStock === false"> Out stock</p>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+<script src='main.js'></script>
+</html>

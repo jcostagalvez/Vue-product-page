@@ -6,6 +6,8 @@
     <title>Sock</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' type='text/css' media='screen' href='style.css'>
+   
+
 </head>
 <body>
 
@@ -21,6 +23,20 @@
                 <h1>{{ product }}</h1>
                 <p v-show="onStock === true"> In stock</p>
                 <p v-show="onStock === false"> Out stock</p>
+
+                <ul v-for="element in details">
+                    <li> {{ element }} </li>
+                </ul>
+
+                <div v-for="variant in variants":key="variant.variantId">
+                    <p @mouseover="updateProduct(variant.variantImage)"> {{ variant.variantColor }}</p>
+                </div>
+ 
+                <button v-on:click="addToCart" >Add to Cart</button>
+
+                <div class="cart">
+                    <p> Cart({{cart}})</p>
+                </div>
             </div>
         </div>
     </div>

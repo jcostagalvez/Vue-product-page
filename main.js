@@ -33,7 +33,24 @@ Vue.component('product', {
                 :disabled="!inStock"
                 :class="{disabledButton : !inStock}">Add to Cart</button>
             </div>
-            <product-review @sent-form="addReview"></product-review>
+
+            <div>
+                <h2 class="title-form"> Help other clients, let your opinion</h2>
+                <product-review @sent-form="addReview"></product-review>
+            </div>
+
+            <div>
+            <h2> Reviews</h2>
+            <p v-show="reviews.length === 0"> No reviews yet for this product </p>
+            <ul v-show="reviews.length > 0"> 
+                <li v-for="review in reviews">
+                <p>{{review.name}}</p> 
+                <p>raiting: {{review.raiting}}</p> 
+                <p>{{review.review}}</p>
+                <p>{{review.recommend}}</p> 
+                </li>
+            </ul>
+        </div>
         </div>
     `,
 
@@ -100,10 +117,10 @@ Vue.component('product-review', {
     template: `
       <form class="review-form" @submit.prevent="onSubmit">
       
-        <p class="error" >
-          <b>Please correct the following error(s):</b>
-          <ul>
-            <li>{{  }}</li>
+        <p class="error" v-show="errors.length > 0">
+          <b>Please correct the following {{errorMessage}} :</b>
+          <ul v-for="error in errors">
+            <li>{{error}}</li>
           </ul>
         </p>
 
@@ -127,7 +144,12 @@ Vue.component('product-review', {
             <option>1</option>
           </select>
         </p>
-            
+        
+        <div class ="checkbox-form">
+            <label>¿Do you recommend this product?</label>
+            <input type="checkbox" v-model="recommend">
+        </div>   
+        
         <p>
           <input type="submit" value="Submit" >  
         </p>    
@@ -140,24 +162,39 @@ Vue.component('product-review', {
             name:null,
             raiting:null,
             review:null,
-
+            recommend:null,
+            errors:[],
         }
     },
 
     methods:{
         onSubmit(){
-            let productReview = {
-                name: this.name,
-                raiting: this.raiting,
-                review: this.review
-            };
-            this.$emit('sent-form',productReview)
-            this.name = null;
-            this.raiting = null;
-            this.review = null;
-
+            if(this.name && this.raiting && this.review){
+                let productReview = {
+                    name: this.name,
+                    raiting: this.raiting,
+                    review: this.review,
+                    recommend: this.recommend === true ? 'Recomiendo este producto' : 'No recomiendo este producto',
+                };
+                this.$emit('sent-form',productReview)
+                this.name = null;
+                this.raiting = null;
+                this.review = null;
+                this.recommend = null;
+            }else{
+                if(!this.name) this.errors.push('The name is required');
+                if(!this.raiting) this.errors.push('The raiting is required');
+                if(!this.review) this.errors.push('The review is required');
+            }
+        }
+    },
+    
+    computed:{
+        errorMessage () {
+            return this.errors.length > 1? 'errors': 'error';
         }
     }
+
 })
 
 const app = new Vue ({

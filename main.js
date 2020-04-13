@@ -1,3 +1,5 @@
+var eventBus = new Vue();
+
 Vue.component('product', {
     
     props:{
@@ -31,32 +33,20 @@ Vue.component('product', {
  
                 <button v-on:click="addToCart" 
                 :disabled="!inStock"
-                :class="{disabledButton : !inStock}">Add to Cart</button>
-            </div>
+                :class="{disabledButton : !inStock}">Add to Cart
+                </button>
+                </div> 
 
             <div>
-                <h2 class="title-form"> Help other clients, let your opinion</h2>
-                <product-review @sent-form="addReview"></product-review>
+                <product-tabs :reviews="reviews"></product-tabs>
             </div>
-
-            <div>
-            <h2> Reviews</h2>
-            <p v-show="reviews.length === 0"> No reviews yet for this product </p>
-            <ul v-show="reviews.length > 0"> 
-                <li v-for="review in reviews">
-                <p>{{review.name}}</p> 
-                <p>raiting: {{review.raiting}}</p> 
-                <p>{{review.review}}</p>
-                <p>{{review.recommend}}</p> 
-                </li>
-            </ul>
-        </div>
         </div>
     `,
 
 data(){
     return{ 
         brand:'Vue Mastery',
+        product: 'Socks',
         selectedVariant: 0,
         details:['80% Cotton', '20% Polyester', 'Gender-neutral'],
         variants : [
@@ -84,12 +74,6 @@ methods:{
     updateProduct(index) {
         this.selectedVariant = index
     },
-
-    addReview(review){
-        this.reviews.push(review);
-    }
-
-
 },
 
 computed:{
@@ -108,7 +92,15 @@ computed:{
     shipping() {
         return this.premium === true? 'free': '2.99$';
     },
+},
+
+mounted(){
+
+    eventBus.$on('sent-form', productReview => {
+        this.reviews.push(productReview);
+    })
 }
+
 
 })
 
@@ -176,7 +168,7 @@ Vue.component('product-review', {
                     review: this.review,
                     recommend: this.recommend === true ? 'Recomiendo este producto' : 'No recomiendo este producto',
                 };
-                this.$emit('sent-form',productReview)
+                eventBus.$emit('sent-form',productReview)
                 this.name = null;
                 this.raiting = null;
                 this.review = null;
@@ -195,6 +187,48 @@ Vue.component('product-review', {
         }
     }
 
+})
+
+Vue.component('product-tabs', {
+    props:{
+        reviews:{
+            type:Array,
+            required:true,
+        }
+
+    },
+    template: `
+            <div>
+                <span
+                class="tab title-form"
+                :class="{activeTab: selectedTab === tab}" 
+                v-for="(tab, index) in tabs" :key="index"
+                @click="selectedTab = tab"> {{ tab }} </span>
+            
+
+                <div v-show="selectedTab === 'Make a Review'">
+                    <product-review></product-review>
+                </div>
+
+                <div v-show="selectedTab === 'Reviews'">
+                    <p v-show="reviews.length === 0" class="form-text"> No reviews yet for this product </p>
+                    <ul v-show="reviews.length > 0"> 
+                        <li v-for="review in reviews">
+                        <p>{{review.name}}</p> 
+                        <p>raiting: {{review.raiting}}</p> 
+                        <p>{{review.review}}</p>
+                        <p>{{review.recommend}}</p> 
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+              tabs: ['Reviews', 'Make a Review'],
+              selectedTab: 'reviews',
+            }
+          }
 })
 
 const app = new Vue ({

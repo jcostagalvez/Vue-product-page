@@ -48,6 +48,7 @@ body {
   
   button {
     margin-top: 30px;
+    margin-bottom: 30px;
     border: none;
     background-color: #1E95EA;
     color: white;
@@ -60,10 +61,7 @@ body {
     background-color: #d8d8d8;
   }
   
-  .title-form{
-    margin-left: 42px;
-    margin-bottom: -23px;  
-  }
+  .form-text{margin-left: 42px;}
 
   .review-form {
     width: 400px;
@@ -83,9 +81,11 @@ body {
     height: 60px;
   }
 
-  .tab {
-    margin-left: 20px;
+  .tab { 
     cursor: pointer;
+    padding-top: 20px; 
+    margin-left: 42px;
+    margin-right: -38;
   }
 
   .activeTab {
